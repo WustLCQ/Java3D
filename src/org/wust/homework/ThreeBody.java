@@ -81,14 +81,30 @@ public class ThreeBody extends Applet{
         Sphere sphere = new Sphere(2f, Primitive.GENERATE_TEXTURE_COORDS, 50, appearance);
         sunTG.addChild(sphere);
 
+		//地日中间层
+		Transform3D earthMid = new Transform3D();
+		earthMid.setTranslation(new Vector3f(0f, 0f, 0f));
+		TransformGroup earthTGMid = new TransformGroup();
+		earthTGMid.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+		earthTGMid.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		earthTGMid.setTransform(earthMid);
+		sunTG.addChild(earthTGMid);
+
+		// 旋转
+		Alpha alpha = new Alpha(-1, 6000);
+		RotationInterpolator rotationInterpolator = new RotationInterpolator(alpha, earthTGMid, earthMid, 0, 2*(float)Math.PI);
+		BoundingSphere bounds = new BoundingSphere();
+		rotationInterpolator.setSchedulingBounds(bounds);
+        earthTGMid.addChild(rotationInterpolator);
+        
 		// 地球
 		Transform3D earthTrans = new Transform3D();
-		earthTrans.setTranslation(new Vector3f(0f, 0f, 3f));
+		earthTrans.setTranslation(new Vector3f(0f, 0f, 4f));
 		TransformGroup earthTG = new TransformGroup();
 		earthTG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		earthTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		earthTG.setTransform(earthTrans);
-		sunTG.addChild(earthTG);
+		earthTGMid.addChild(earthTG);
 
 		// 创建场景物体
 		String earth = "images/earth.jpg";
@@ -96,32 +112,50 @@ public class ThreeBody extends Applet{
 		sphere = new Sphere(0.7f, Primitive.GENERATE_TEXTURE_COORDS, 50, appearance);
 		earthTG.addChild(sphere);
 
-		// 旋转
-		Alpha alpha = new Alpha(-1, 6000);
-		RotationInterpolator rotationInterpolator = new RotationInterpolator(alpha, earthTG, earthTrans, 0, 2*(float)Math.PI);
-		BoundingSphere bounds = new BoundingSphere();
+		 //旋转
+		Alpha alphaEarth = new Alpha(-1, 6000);
+		RotationInterpolator riEarth = new RotationInterpolator(alphaEarth, earthTG, earthTrans, 0,
+				2 * (float) Math.PI);
 		rotationInterpolator.setSchedulingBounds(bounds);
-        earthTG.addChild(rotationInterpolator);
-        
+		earthTG.addChild(riEarth);
+		
+		// 地月中间层
+		Transform3D moonMid = new Transform3D();
+		moonMid.setTranslation(new Vector3f(0f, 0f, 0f));
+		TransformGroup moonTGMid = new TransformGroup();
+		moonTGMid.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+		moonTGMid.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		moonTGMid.setTransform(moonMid);
+		earthTG.addChild(moonTGMid);
+
+		// 旋转
+		alpha = new Alpha(-1, 6000);
+		rotationInterpolator = new RotationInterpolator(
+				alpha, moonTGMid, moonMid, 0, 2 * (float) Math.PI);
+		bounds = new BoundingSphere();
+		rotationInterpolator.setSchedulingBounds(bounds);
+		moonTGMid.addChild(rotationInterpolator);
+
 		// 月球
 		Transform3D moonTrans = new Transform3D();
-		moonTrans.setTranslation(new Vector3f(0f, 0f, 3f));
+		moonTrans.setTranslation(new Vector3f(0f, 0f, -1f));
 		TransformGroup moonTG = new TransformGroup();
 		moonTG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		moonTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		moonTG.setTransform(moonTrans);
-		earthTG.addChild(moonTG);
+		moonTGMid.addChild(moonTG);
 
 		// 创建场景物体
 		String moon = "images/moon.jpg";
 		appearance = createTextureAppearance(moon); // 生成具有纹理的外观形象
-		sphere = new Sphere(0.2f, Primitive.GENERATE_TEXTURE_COORDS, 50, appearance);
+		sphere = new Sphere(0.2f, Primitive.GENERATE_TEXTURE_COORDS, 50,
+				appearance);
 		moonTG.addChild(sphere);
 
-		 //旋转
+		// 旋转
 		Alpha alphaMoon = new Alpha(-1, 6000);
-		RotationInterpolator riMoon = new RotationInterpolator(alphaMoon, moonTG, moonTrans, 0,
-				2 * (float) Math.PI);
+		RotationInterpolator riMoon = new RotationInterpolator(alphaMoon,
+				moonTG, moonTrans, 0, 2 * (float) Math.PI);
 		rotationInterpolator.setSchedulingBounds(bounds);
 		moonTG.addChild(riMoon);
 
